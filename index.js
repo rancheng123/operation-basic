@@ -1,5 +1,5 @@
+import utils from './lib/js/asset'
+
 export default {
-    a: 1,
-    b: 2,
-    c: 12345
+    utils,
 }
