@@ -1,0 +1,9 @@
+{
+  "name": "@operation/basic",
+  "version": "1.0.0",
+  "main": "./index.js",
+  "devDependencies": {
+    "gulp": "^4.0.2"
+  },
+  "dependencies": {}
+}
