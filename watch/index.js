@@ -1,7 +1,8 @@
 var gulp = require('gulp');
+var watch = require('gulp-watch');
 var fs = require('fs');
 
-var srcDir = '/Users/deo/WebstormProjects/workPlace/businessDir/operation-basic/';
+var srcDir = '/Users/deo/WebstormProjects/workPlace/operation-basic/';
 var distDir = '/Users/deo/WebstormProjects/workPlace/businessDir/operation/node_modules/@operation/basic/';
 
 
@@ -48,12 +49,15 @@ controlDirOrFile = controlDirOrFile.map((ele,i)=>{
     return ele
 })
 
-var watcher =gulp.watch(controlDirOrFile);
-watcher.on('change', function(filePath) {
+
+
+
+watch(controlDirOrFile, function (obj) {
     singleEmit({
-        filePath: filePath,
+        filePath: obj.history[0],
+        event: obj.event,
         srcDir: srcDir,
-        distDir: distDir
+        distDir: distDir,
     })
 });
 //监控所有文件  end
@@ -65,8 +69,34 @@ function singleEmit(opts){
     var arr = opts.filePath.replace(opts.srcDir,'').split('/');
     arr.pop();
 
-    gulp.src(opts.filePath)
-        .pipe(gulp.dest( opts.distDir + arr.join('/') ))
+    var originFile = opts.filePath;
+    var targetFile = opts.distDir + opts.filePath.replace(opts.srcDir,'');
+    var targetDir = opts.distDir + arr.join('/');
+
+
+
+    if(opts.event == 'change' || opts.event == 'add'){
+        gulp.src(originFile)
+            .pipe(gulp.dest( targetDir ));
+
+        if(opts.event == 'change'){
+            console.log('文件 '+ targetFile + '已替换')
+        }else{
+            console.log('文件 '+ targetFile + '已添加')
+        }
+
+
+
+    }else if(opts.event == 'unlink'){
+        fs.unlinkSync(targetFile);
+
+        console.log('文件 '+ targetFile + '已删除')
+    }
+
+
+
+
+
 }
 
 
